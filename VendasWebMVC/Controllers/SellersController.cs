@@ -32,6 +32,7 @@ namespace VendasWebMVC.Controllers
             return View(viewModel);
         }
 
+        //Encaminha  via POST um novo Vendedor
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(Seller seller)
@@ -40,7 +41,7 @@ namespace VendasWebMVC.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        //Encaminha para a View o id.Seller para ser deletado
+        //Verifica a View do id.Seller para ser deletado
         public IActionResult Delete(int? id)
         {
             if(id == null)
@@ -57,12 +58,29 @@ namespace VendasWebMVC.Controllers
             return View(obj);
         }
 
+        //Encaminha via POST a id para ser deletada
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Delete(int id)
         {
             _sellersService.Remove(id);
             return RedirectToAction(nameof(Index));
+        }
+
+        public IActionResult Details(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var obj = _sellersService.FindById(id.Value);
+            if (obj == null)
+            {
+                return NotFound();
+            }
+
+            return View(obj);
         }
     }
 }
