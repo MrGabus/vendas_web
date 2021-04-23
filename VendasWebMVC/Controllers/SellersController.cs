@@ -39,5 +39,30 @@ namespace VendasWebMVC.Controllers
             _sellersService.Inset(seller);
             return RedirectToAction(nameof(Index));
         }
+
+        //Encaminha para a View o id.Seller para ser deletado
+        public IActionResult Delete(int? id)
+        {
+            if(id == null)
+            {
+                return NotFound();
+            }
+
+            var obj = _sellersService.FindById(id.Value);
+            if(obj == null)
+            {
+                return NotFound();
+            }
+
+            return View(obj);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Delete(int id)
+        {
+            _sellersService.Remove(id);
+            return RedirectToAction(nameof(Index));
+        }
     }
 }

@@ -16,14 +16,30 @@ namespace VendasWebMVC.Services
             _context = context;
         }
 
+        //Retorna todos Vendedores
         public List<Seller> FindAll()
         {
             return _context.Seller.ToList();
         }
 
+        //Salva novos Venndedores no banco de dados
         public void Inset(Seller obj)
         {
             _context.Add(obj);
+            _context.SaveChanges();
+        }
+
+        //Localiza um vendedor pelo Id
+        public Seller FindById(int id)
+        {
+            return _context.Seller.FirstOrDefault(obj => obj.Id == id);
+        }
+
+        //Deleta o vendedor pelo Id
+        public void Remove (int id)
+        {
+            var obj = _context.Seller.Find(id);
+            _context.Seller.Remove(obj);
             _context.SaveChanges();
         }
     }
