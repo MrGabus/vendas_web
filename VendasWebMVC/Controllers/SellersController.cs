@@ -21,15 +21,15 @@ namespace VendasWebMVC.Controllers
             _sellersService = sellerService;
             _departmentService = departmentService;
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var list = _sellersService.FindAll();
+            var list = await _sellersService.FindAllAsync();
             return View(list);
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            var departments = _departmentService.FinbdAll();
+            var departments = await _departmentService.FinbdAllAsync();
             var viewModel = new SellerFormViewModel { Departments = departments };
             return View(viewModel);
         }
@@ -37,27 +37,27 @@ namespace VendasWebMVC.Controllers
         //Encaminha  via POST um novo Vendedor
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(Seller seller)
+        public async Task<IActionResult> Create(Seller seller)
         {
             if (!ModelState.IsValid)
             {
-                var departments = _departmentService.FinbdAll();
+                var departments = await _departmentService.FinbdAllAsync();
                 var viewModel = new SellerFormViewModel { Seller = seller, Departments = departments };
                 return View(viewModel);
             }
-            _sellersService.Inset(seller);
+            await _sellersService.InsetAsync(seller);
             return RedirectToAction(nameof(Index));
         }
 
         //Verifica a View do id.Seller para ser deletado
-        public IActionResult Delete(int? id)
+        public async Task<IActionResult> Delete(int? id)
         {
             if(id == null)
             {
                 return RedirectToAction(nameof(Error), new { message = "Id não informado"});
             }
 
-            var obj = _sellersService.FindById(id.Value);
+            var obj = await _sellersService.FindByIdAsync(id.Value);
             if(obj == null)
             {
                 return RedirectToAction(nameof(Error), new { message = "Id não encontrado" });
@@ -69,21 +69,21 @@ namespace VendasWebMVC.Controllers
         //Encaminha via POST a id para ser deletada
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            _sellersService.Remove(id);
+            await _sellersService.RemoveAsync(id);
             return RedirectToAction(nameof(Index));
         }
 
         //Retorna os detalhes do Vendedor
-        public IActionResult Details(int? id)
+        public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
                 return RedirectToAction(nameof(Error), new { message = "Id não informado" });
             }
 
-            var obj = _sellersService.FindById(id.Value);
+            var obj = await _sellersService.FindByIdAsync(id.Value);
             if (obj == null)
             {
                 return RedirectToAction(nameof(Error), new { message = "Id não encontrado" });
@@ -93,20 +93,20 @@ namespace VendasWebMVC.Controllers
         }
 
         //Encaminha os dados do Vendendo para edição
-        public IActionResult Edit(int? id)
+        public async Task<IActionResult> Edit(int? id)
         {
             if( id == null)
             {
                 return RedirectToAction(nameof(Error), new { message = "Id não informado" });
             }
 
-            var obj = _sellersService.FindById(id.Value);
+            var obj = await _sellersService.FindByIdAsync(id.Value);
             if(obj == null)
             {
                 return RedirectToAction(nameof(Error), new { message = "Id não encontrado" });
             }
 
-            List<Department> departments = _departmentService.FinbdAll();
+            List<Department> departments = await _departmentService.FinbdAllAsync();
             SellerFormViewModel viewModel = new SellerFormViewModel { Seller = obj, Departments = departments };
             return View(viewModel);
         }
@@ -114,11 +114,11 @@ namespace VendasWebMVC.Controllers
         //Editar via post os dados do Vendendor
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, Seller seller)
+        public async Task<IActionResult> Edit(int id, Seller seller)
         {
             if (!ModelState.IsValid)
             {
-                var departments = _departmentService.FinbdAll();
+                var departments = await _departmentService.FinbdAllAsync();
                 var viewModel = new SellerFormViewModel { Seller = seller, Departments = departments };
                 return View(viewModel);
             }
@@ -128,7 +128,7 @@ namespace VendasWebMVC.Controllers
             }
             try
             {
-                _sellersService.Update(seller);
+                await _sellersService.UpdateAsync(seller);
                 return RedirectToAction(nameof(Index));
             }
             //Caso ocorra algum erro, ira retornar a mensagem.
